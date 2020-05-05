@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 
 #initializes the variables
@@ -6,6 +7,8 @@ downloadFile = raw_input("Enter Download URL: ")
 extension = raw_input("Enter Download Extension (ex: .zip, .png, .exe,): ")
 
 #determines the size of the download
+startTime = time.time()
+
 process = subprocess.Popen(["curl", "-L", "-I", downloadFile], stdout=subprocess.PIPE)
 stdout = process.communicate()[0]
 print 'STDOUT:{}'.format(stdout) 
@@ -46,6 +49,7 @@ os.system(downloadCommand)
 
 #finishes up download and performs a checksum with existing files with same extension
 os.system("cat Block*.bin > output" + extension)
-os.system("echo \"Download Complete!\"")
+timeElapsed = float("{:.2f}".format(time.time() - startTime))
+print "Download Complete! " + str(timeElapsed) + "s @ {:.2f}".format((float(fileSize) / timeElapsed) / 1000000) + "MB/s"
 os.system("rm Block*.bin")
 os.system("cksum *" + extension)
